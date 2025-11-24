@@ -4,8 +4,6 @@ import ReactFlow, {
     type Edge,
     Controls,
     Background,
-    useNodesState,
-    useEdgesState,
     MarkerType,
     Position
 } from 'reactflow';
@@ -14,23 +12,21 @@ import { api } from '../services/api';
 import type { Risk } from '../types';
 import styles from './Page.module.css';
 
-// Custom node styles could be defined here or in CSS
 const nodeStyles = {
-    risk: { background: '#ef4444', color: 'white', border: 'none', borderRadius: '50%', width: 100, height: 100, display: 'flex', justifyContent: 'center', alignItems: 'center', textAlign: 'center' as const, fontSize: '12px', fontWeight: 'bold' },
-    measure: { background: '#22c55e', color: 'white', border: '1px solid #16a34a', borderRadius: '8px', padding: '10px', width: 150 },
-    incident: { background: '#f97316', color: 'white', border: '1px solid #ea580c', borderRadius: '8px', padding: '10px', width: 150 },
-    process: { background: '#3b82f6', color: 'white', border: '1px solid #2563eb', borderRadius: '8px', padding: '10px', width: 150 },
-    asset: { background: '#a855f7', color: 'white', border: '1px solid #9333ea', borderRadius: '8px', padding: '10px', width: 150 },
-    regulation: { background: '#64748b', color: 'white', border: '1px solid #475569', borderRadius: '8px', padding: '10px', width: 150 },
-    assessment: { background: '#eab308', color: 'black', border: '1px solid #ca8a04', borderRadius: '8px', padding: '10px', width: 150 },
+    risk: { background: '#ef4444', color: 'white', border: 'none', borderRadius: '50%', width: 100, height: 100, display: 'flex', justifyContent: 'center', alignItems: 'center', textAlign: 'center' as const, fontSize: '12px', fontWeight: 'bold', padding: '10px' },
+    measure: { background: '#22c55e', color: 'white', border: '1px solid #16a34a', borderRadius: '8px', padding: '10px', minWidth: '150px' },
+    incident: { background: '#f97316', color: 'white', border: '1px solid #ea580c', borderRadius: '8px', padding: '10px', minWidth: '150px' },
+    process: { background: '#3b82f6', color: 'white', border: '1px solid #2563eb', borderRadius: '8px', padding: '10px', minWidth: '150px' },
+    asset: { background: '#a855f7', color: 'white', border: '1px solid #9333ea', borderRadius: '8px', padding: '10px', minWidth: '150px' },
+    regulation: { background: '#64748b', color: 'white', border: '1px solid #475569', borderRadius: '8px', padding: '10px', minWidth: '150px' },
+    assessment: { background: '#eab308', color: 'black', border: '1px solid #ca8a04', borderRadius: '8px', padding: '10px', minWidth: '150px' },
 };
 
 export const RiskCanvas: React.FC = () => {
     const [risks, setRisks] = useState<Risk[]>([]);
     const [selectedRiskId, setSelectedRiskId] = useState<string>('');
-
-    const [nodes, setNodes, onNodesChange] = useNodesState([]);
-    const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+    const [nodes, setNodes] = useState<Node[]>([]);
+    const [edges, setEdges] = useState<Edge[]>([]);
 
     useEffect(() => {
         const loadRisks = async () => {
@@ -73,7 +69,6 @@ export const RiskCanvas: React.FC = () => {
                 targetPosition: Position.Left,
             });
 
-            // Helper to add node and edge
             const addEntity = (id: string, label: string, type: keyof typeof nodeStyles, x: number, y: number, labelPrefix: string = '') => {
                 newNodes.push({
                     id,
@@ -133,7 +128,7 @@ export const RiskCanvas: React.FC = () => {
             // Latest Assessment (Bottom)
             const riskAssessments = assessments.filter(a => a.riskId === risk.id);
             if (riskAssessments.length > 0) {
-                const latest = riskAssessments[0]; // Assuming sorted or just taking first
+                const latest = riskAssessments[0];
                 newNodes.push({
                     id: latest.id,
                     data: { label: `Procjena: ${latest.riskLevel}` },
@@ -185,8 +180,6 @@ export const RiskCanvas: React.FC = () => {
                 <ReactFlow
                     nodes={nodes}
                     edges={edges}
-                    onNodesChange={onNodesChange}
-                    onEdgesChange={onEdgesChange}
                     fitView
                 >
                     <Background />

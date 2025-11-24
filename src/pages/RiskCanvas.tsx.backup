@@ -1,0 +1,398 @@
+import React, { useEffect, useState, useCallback, useRef } from 'react';
+import ReactFlow, {
+    type Node,
+    type Edge,
+import { useCanvasBuilder, type EntityType } from '../hooks/useCanvasBuilder';
+import { NodeCreationToolbar } from '../components/NodeCreationToolbar';
+import { EntityFormModal } from '../components/EntityFormModal';
+import { SimulationControls } from '../components/SimulationControls';
+import styles from './RiskCanvas.module.css';
+
+const nodeStyles: Record<EntityType, React.CSSProperties> = {
+    risk: { background: '#ef4444', color: 'white', border: 'none', borderRadius: '50%', width: 100, height: 100, display: 'flex', justifyContent: 'center', alignItems: 'center', textAlign: 'center', fontSize: '12px', fontWeight: 'bold', padding: '10px' },
+    measure: { background: '#22c55e', color: 'white', border: '1px solid #16a34a', borderRadius: '8px', padding: '10px', minWidth: '150px' },
+    incident: { background: '#f97316', color: 'white', border: '1px solid #ea580c', borderRadius: '8px', padding: '10px', minWidth: '150px' },
+    process: { background: '#3b82f6', color: 'white', border: '1px solid #2563eb', borderRadius: '8px', padding: '10px', minWidth: '150px' },
+    asset: { background: '#a855f7', color: 'white', border: '1px solid #9333ea', borderRadius: '8px', padding: '10px', minWidth: '150px' },
+    regulation: { background: '#64748b', color: 'white', border: '1px solid #475569', borderRadius: '8px', padding: '10px', minWidth: '150px' },
+    assessment: { background: '#eab308', color: 'black', border: '1px solid #ca8a04', borderRadius: '8px', padding: '10px', minWidth: '150px' },
+};
+
+export const RiskCanvas: React.FC = () => {
+    const [builderMode, setBuilderMode] = useState(true);
+    const [risks, setRisks] = useState<Risk[]>([]);
+    const [selectedRiskId, setSelectedRiskId] = useState<string>('');
+
+    const [nodes, setNodes, onNodesChange] = useNodesState([]);
+    const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+
+    const loadRisks = async () => {
+        const data = await api.getRisks();
+        setRisks(data);
+        if (data.length > 0) {
+            setSelectedRiskId(data[0].id);
+        }
+    };
+    loadRisks();
+}, []);
+
+// Load visualization from API when in view mode
+useEffect(() => {
+    if (!builderMode && selectedRiskId) {
+        loadVisualizationFromAPI();
+    }
+}, [selectedRiskId, builderMode]);
+
+const loadVisualizationFromAPI = async () => {
+    const risk = risks.find(r => r.id === selectedRiskId);
+    if (!risk) return;
+
+    const [measures, incidents, assessments, processes, assets, regulations] = await Promise.all([
+        api.getMitigationMeasures(),
+        api.getIncidents(),
+        api.getRiskAssessments(),
+        api.getProcesses(),
+        api.getAssets(),
+        api.getRegulations()
+    ]);
+
+    const newNodes: Node[] = [];
+    const newEdges: Edge[] = [];
+
+    // Central Risk
+    newNodes.push({
+        id: 'risk-center',
+        type: 'default',
+        data: { label: risk.name, type: 'risk' },
+        position: { x: 400, y: 300 },
+        style: nodeStyles.risk,
+    });
+
+    const addEntity = (id: string, label: string, type: EntityType, x: number, y: number) => {
+        newNodes.push({
+            id,
+            data: { label, type },
+            position: { x, y },
+            style: nodeStyles[type],
+        });
+
+        newEdges.push({
+            id: `e-${id}`,
+            source: x < 400 ? id : 'risk-center',
+            target: x < 400 ? 'risk-center' : id,
+            animated: true,
+            style: { stroke: '#94a3b8' },
+            markerEnd: { type: MarkerType.ArrowClosed, color: '#94a3b8' },
+        });
+    };
+
+    // Connected Measures
+    const riskMeasures = measures.filter(m => m.riskId === risk.id);
+    riskMeasures.forEach((m, i) => addEntity(m.id, m.name, 'measure', 700, 100 + (i * 120)));
+
+    // Connected Incidents
+    const riskIncidents = incidents.filter(i => i.riskId === risk.id);
+    riskIncidents.forEach((inc, i) => addEntity(inc.id, inc.eventDescription, 'incident', 700, 100 + ((riskMeasures.length + i) * 120)));
+
+    // Connected Process
+    if (risk.processId) {
+        const process = processes.find(p => p.id === risk.processId);
+        if (process) addEntity(process.id, process.name, 'process', 100, 100);
+    }
+
+    // Connected Asset
+    if (risk.assetId) {
+        const asset = assets.find(a => a.id === risk.assetId);
+        if (asset) addEntity(asset.id, asset.name, 'asset', 100, 250);
+    }
+
+    // Connected Regulation
+    if (risk.regulationId) {
+        const regulation = regulations.find(r => r.id === risk.regulationId);
+        if (regulation) addEntity(regulation.id, regulation.name, 'regulation', 100, 400);
+    }
+
+    // Latest Assessment
+    const riskAssessments = assessments.filter(a => a.riskId === risk.id);
+    if (riskAssessments.length > 0) {
+        const latest = riskAssessments[0];
+        newNodes.push({
+            id: latest.id,
+            data: { label: `Procjena: ${latest.riskLevel}`, type: 'assessment' },
+            position: { x: 400, y: 500 },
+            style: nodeStyles.assessment,
+        });
+        newEdges.push({
+            id: `e-${latest.id}`,
+            source: 'risk-center',
+            target: latest.id,
+            style: { stroke: '#eab308', strokeWidth: 2 },
+        });
+    }
+
+    setNodes(newNodes);
+    setEdges(newEdges);
+};
+
+// Sync builder state with ReactFlow state
+useEffect(() => {
+    if (builderMode) {
+        setNodes(canvasBuilder.nodes);
+        setEdges(canvasBuilder.edges);
+    }
+}, [builderMode, canvasBuilder.nodes, canvasBuilder.edges]);
+
+// Handle canvas click to place node
+const handlePaneClick = useCallback((event: React.MouseEvent) => {
+    if (!creatingNodeType) return;
+
+    const bounds = (event.currentTarget as HTMLElement).getBoundingClientRect();
+    const position = {
+        x: event.clientX - bounds.left - 75,
+        y: event.clientY - bounds.top - 75,
+    };
+
+    setEditingNode({
+        id: '',
+        position,
+        data: { type: creatingNodeType },
+    } as Node);
+    setModalOpen(true);
+    setCreatingNodeType(null);
+}, [creatingNodeType]);
+
+// Handle node double click for editing
+const handleNodeDoubleClick = useCallback((_event: React.MouseEvent, node: Node) => {
+    if (!builderMode) return;
+    setEditingNode(node);
+    setModalOpen(true);
+}, [builderMode]);
+
+// Handle saving from modal
+const handleSaveEntity = useCallback((data: Partial<{ label: string; description: string }>) => {
+    if (editingNode?.id) {
+        // Update existing node
+        canvasBuilder.updateNode(editingNode.id, data);
+    } else if (editingNode) {
+        // Create new node
+        const newNode = canvasBuilder.addNode(
+            editingNode.data.type as EntityType,
+            editingNode.position,
+            data
+        );
+
+        // Update styles
+        setNodes((nds) =>
+            nds.map((n) =>
+                n.id === newNode.id
+                    ? { ...n, style: nodeStyles[editingNode.data.type as EntityType] }
+                    : n
+            )
+        );
+    }
+    setModalOpen(false);
+    setEditingNode(null);
+}, [editingNode, canvasBuilder]);
+
+// Handle connection between nodes
+const handleConnect = useCallback((connection: Connection) => {
+    if (!builderMode) return;
+
+    const success = canvasBuilder.addEdge(connection);
+    if (success) {
+        setEdges((eds) => addReactFlowEdge({
+            ...connection,
+            id: `e-${connection.source}-${connection.target}`,
+            animated: true,
+            style: { stroke: '#94a3b8' },
+            markerEnd: { type: MarkerType.ArrowClosed, color: '#94a3b8' },
+        }, eds));
+    }
+}, [builderMode, canvasBuilder, setEdges]);
+
+// Context menu for delete
+const handleNodeContextMenu = useCallback((event: React.MouseEvent, node: Node) => {
+    if (!builderMode) return;
+    event.preventDefault();
+    setContextMenu({ x: event.clientX, y: event.clientY, nodeId: node.id });
+}, [builderMode]);
+
+const handleDeleteNode = useCallback(() => {
+    if (contextMenu) {
+        canvasBuilder.deleteNode(contextMenu.nodeId);
+        setContextMenu(null);
+    }
+}, [contextMenu, canvasBuilder]);
+
+// Simulation logic
+const startSimulation = useCallback(() => {
+    // Find all risk nodes
+    const riskNodes = canvasBuilder.nodes.filter(n => n.data.type === 'risk');
+    if (riskNodes.length === 0) return;
+
+    setSimulation({ isRunning: true, impactedNodes: new Set() });
+
+    let step = 0;
+    const impacted = new Set<string>();
+
+    simulationInterval.current = setInterval(() => {
+        // Propagate impact through edges
+        const queue = [...riskNodes.map(n => n.id)];
+        const visited = new Set<string>();
+
+        while (queue.length > 0 && step < 10) {
+            const current = queue.shift();
+            if (!current || visited.has(current)) continue;
+
+            visited.add(current);
+            impacted.add(current);
+
+            // Find connected nodes
+            canvasBuilder.edges
+                .filter(e => e.source === current || e.target === current)
+                .forEach(edge => {
+                    const nextId = edge.source === current ? edge.target : edge.source;
+                    if (!visited.has(nextId)) {
+                        queue.push(nextId);
+                    }
+                });
+        }
+
+        setSimulation({ isRunning: true, impactedNodes: impacted });
+
+        // Update node styles
+        setNodes((nds) =>
+            nds.map((node) => ({
+                ...node,
+                style: {
+                    ...nodeStyles[node.data.type as EntityType],
+                    ...(impacted.has(node.id) ? { border: '3px solid #f59e0b', boxShadow: '0 0 10px rgba(245, 158, 11, 0.5)' } : {}),
+                },
+            }))
+        );
+
+        step++;
+        if (step >= 10) {
+            stopSimulation();
+        }
+    }, 1000);
+}, [canvasBuilder]);
+
+const stopSimulation = useCallback(() => {
+    if (simulationInterval.current) {
+        clearInterval(simulationInterval.current);
+        simulationInterval.current = null;
+    }
+    setSimulation({ isRunning: false, impactedNodes: new Set() });
+}, []);
+
+const resetSimulation = useCallback(() => {
+    stopSimulation();
+    // Reset node styles
+    setNodes((nds) =>
+        nds.map((node) => ({
+            ...node,
+            style: nodeStyles[node.data.type as EntityType],
+        }))
+    );
+}, [stopSimulation]);
+
+return (
+    <div className={styles.container}>
+        <div className={styles.header}>
+            <div className={styles.titleGroup}>
+                <h1 className={styles.title}>Mapa rizika</h1>
+                <p className={styles.subtitle}>
+                    {builderMode ? 'Interaktivni builder - kreirajte i povezujte rizike' : 'Vizualni prikaz povezanosti rizika'}
+                </p>
+            </div>
+
+            <div className={styles.controls}>
+                {!builderMode && (
+                    <select
+                        value={selectedRiskId}
+                        onChange={(e) => setSelectedRiskId(e.target.value)}
+                        className={styles.select}
+                    >
+                        {risks.map(risk => (
+                            <option key={risk.id} value={risk.id}>{risk.name}</option>
+                        ))}
+                    </select>
+                )}
+
+                <button
+                    className={styles.modeToggle}
+                    onClick={() => setBuilderMode(!builderMode)}
+                >
+                    {builderMode ? <ToggleRight size={20} /> : <ToggleLeft size={20} />}
+                    <span>{builderMode ? 'Builder' : 'View'} Mode</span>
+                </button>
+            </div>
+        </div>
+
+        <div className={styles.canvas}>
+            <ReactFlow
+                nodes={nodes}
+                edges={edges}
+                onNodesChange={builderMode ? onNodesChange : undefined}
+                onEdgesChange={builderMode ? onEdgesChange : undefined}
+                onConnect={handleConnect}
+                onPaneClick={handlePaneClick}
+                onNodeDoubleClick={handleNodeDoubleClick}
+                onNodeContextMenu={handleNodeContextMenu}
+                connectionMode={ConnectionMode.Loose}
+                fitView
+            >
+                <Background />
+                <Controls />
+            </ReactFlow>
+        </div>
+
+        {builderMode && (
+            <>
+                <NodeCreationToolbar
+                    onCreateNode={setCreatingNodeType}
+                    activeType={creatingNodeType}
+                />
+
+                <SimulationControls
+                    isRunning={simulation.isRunning}
+                    onPlay={startSimulation}
+                    onPause={stopSimulation}
+                    onReset={resetSimulation}
+                />
+            </>
+        )}
+
+        <EntityFormModal
+            isOpen={modalOpen}
+            entityType={(editingNode?.data?.type as EntityType) || 'risk'}
+            initialData={editingNode?.data}
+            onSave={handleSaveEntity}
+            onClose={() => {
+                setModalOpen(false);
+                setEditingNode(null);
+            }}
+        />
+
+        {contextMenu && (
+            <div
+                className={styles.contextMenu}
+                style={{ top: contextMenu.y, left: contextMenu.x }}
+                onMouseLeave={() => setContextMenu(null)}
+            >
+                <button className={styles.contextMenuItem} onClick={handleDeleteNode}>
+                    <Trash2 size={16} />
+                    Obriši
+                </button>
+            </div>
+        )}
+
+        {creatingNodeType && (
+            <div className={styles.hint}>
+                Kliknite na canvas da postavite čvor
+            </div>
+        )}
+    </div>
+);
+};
