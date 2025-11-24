@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
 import {
     ShieldAlert,
@@ -14,7 +14,9 @@ import {
     Book,
     Target,
     BookOpen,
-    Network
+    Network,
+    Menu,
+    X
 } from 'lucide-react';
 import styles from './Layout.module.css';
 
@@ -36,18 +38,40 @@ const navItems = [
 ];
 
 export const Layout: React.FC = () => {
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+
+    const toggleSidebar = () => {
+        setSidebarOpen(!sidebarOpen);
+    };
+
+    const closeSidebar = () => {
+        setSidebarOpen(false);
+    };
+
     return (
         <div className={styles.container}>
-            <aside className={styles.sidebar}>
+            {/* Overlay for mobile */}
+            <div
+                className={`${styles.overlay} ${sidebarOpen ? styles.overlayVisible : ''}`}
+                onClick={closeSidebar}
+            />
+
+            <aside className={`${styles.sidebar} ${sidebarOpen ? styles.sidebarOpen : ''}`}>
                 <div className={styles.sidebarHeader}>
-                    <ShieldAlert className={styles.logo} />
-                    <span className={styles.logo}>RiskManager</span>
+                    <div className={styles.logoGroup}>
+                        <ShieldAlert className={styles.logo} />
+                        <span className={styles.logo}>RiskManager</span>
+                    </div>
+                    <button className={styles.menuButton} onClick={toggleSidebar}>
+                        <X size={24} />
+                    </button>
                 </div>
                 <nav className={styles.nav}>
                     {navItems.map((item) => (
                         <NavLink
                             key={item.path}
                             to={item.path}
+                            onClick={closeSidebar}
                             className={({ isActive }) =>
                                 `${styles.navItem} ${isActive ? styles.navItemActive : ''}`
                             }
@@ -59,6 +83,14 @@ export const Layout: React.FC = () => {
                 </nav>
             </aside>
             <main className={styles.main}>
+                {/* Mobile menu button */}
+                <button
+                    className={styles.menuButton}
+                    onClick={toggleSidebar}
+                    style={{ marginBottom: '1rem' }}
+                >
+                    <Menu size={24} />
+                </button>
                 <Outlet />
             </main>
         </div>

@@ -2,7 +2,7 @@
     background-color: var(--surface-color);
     border-radius: var(--radius-md);
     box-shadow: var(--shadow-sm);
-    overflow: hidden;
+    overflow-x: auto;
     border: 1px solid var(--border-color);
 }
 
@@ -10,6 +10,7 @@
     width: 100%;
     border-collapse: collapse;
     text-align: left;
+    min-width: 600px;
 }
 
 .th {
@@ -19,6 +20,7 @@
     color: var(--text-secondary);
     border-bottom: 1px solid var(--border-color);
     font-size: 0.875rem;
+    white-space: nowrap;
 }
 
 .td {
@@ -39,6 +41,7 @@
 .actions {
     display: flex;
     gap: var(--spacing-sm);
+    flex-wrap: wrap;
 }
 
 .actionButton {
@@ -49,9 +52,24 @@
     cursor: pointer;
     font-size: 0.75rem;
     transition: all 0.2s;
+    white-space: nowrap;
 }
 
 .actionButton:hover {
     background-color: var(--background-color);
     border-color: var(--text-secondary);
+}
+
+@media (max-width: 768px) {
+
+    .th,
+    .td {
+        padding: var(--spacing-sm);
+        font-size: 0.8rem;
+    }
+
+    .actionButton {
+        font-size: 0.7rem;
+        padding: 0.25rem 0.5rem;
+    }
 }
