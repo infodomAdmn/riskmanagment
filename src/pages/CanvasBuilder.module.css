@@ -1,0 +1,149 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 80px);
+    padding: 20px;
+}
+
+.header {
+    margin-bottom: 20px;
+}
+
+.titleGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-color);
+    margin: 0;
+}
+
+.subtitle {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.infoBox {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border-left: 4px solid #f59e0b;
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.infoTitle {
+    margin: 0 0 12px 0;
+    font-size: 15px;
+    font-weight: 700;
+    color: #92400e;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.infoList {
+    margin: 0;
+    padding-left: 20px;
+    color: #78350f;
+}
+
+.infoList li {
+    margin-bottom: 8px;
+    line-height: 1.5;
+    font-size: 13px;
+}
+
+.infoList li:last-child {
+    margin-bottom: 0;
+}
+
+.infoList strong {
+    font-weight: 700;
+    color: #92400e;
+}
+
+.canvasWrapper {
+    flex: 1;
+    position: relative;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f8fafc;
+}
+
+/* ReactFlow custom styles */
+:global(.react-flow__node) {
+    cursor: pointer;
+}
+
+:global(.react-flow__node.selected) {
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+}
+
+:global(.react-flow__edge-path) {
+    stroke-width: 2;
+}
+
+:global(.react-flow__edge.selected .react-flow__edge-path) {
+    stroke: var(--primary-color);
+    stroke-width: 3;
+}
+
+:global(.react-flow__handle) {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+:global(.react-flow__handle-left) {
+    left: -5px;
+}
+
+:global(.react-flow__handle-right) {
+    right: -5px;
+}
+
+:global(.react-flow__minimap) {
+    background: white;
+    border: 1px solid var(--border-color);
+}
+
+:global(.react-flow__controls) {
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+:global(.react-flow__controls-button) {
+    background: white;
+    border-bottom: 1px solid var(--border-color);
+}
+
+:global(.react-flow__controls-button:hover) {
+    background: var(--hover-bg);
+}
+
+/* Simulation node effects */
+:global(.nodeAffected) {
+    animation: nodeGlow 1.5s ease-in-out infinite;
+}
+
+@keyframes nodeGlow {
+
+    0%,
+    100% {
+        filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.6));
+    }
+
+    50% {
+        filter: drop-shadow(0 0 16px rgba(239, 68, 68, 0.9));
+    }
+}

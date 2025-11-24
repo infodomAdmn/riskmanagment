@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Layout } from './layout/Layout';
 import { Dashboard } from './pages/Dashboard';
 import { RiskCanvas } from './pages/RiskCanvas';
+import { CanvasBuilder } from './pages/CanvasBuilder';
 import { RiskRegister } from './pages/RiskRegister';
 import { RiskAssessments } from './pages/RiskAssessments';
 import { MitigationMeasures } from './pages/MitigationMeasures';
@@ -23,6 +24,7 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Dashboard />} />
           <Route path="canvas" element={<RiskCanvas />} />
+          <Route path="canvas-builder" element={<CanvasBuilder />} />
           <Route path="risks" element={<RiskRegister />} />
           <Route path="assessments" element={<RiskAssessments />} />
           <Route path="measures" element={<MitigationMeasures />} />

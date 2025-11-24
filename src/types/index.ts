@@ -174,3 +174,46 @@ export interface OrgUnit {
     name: string;
     parentId?: string;
 }
+
+// Canvas Builder Types
+export type CanvasNodeType = 'risk' | 'process' | 'asset' | 'measure' | 'incident' | 'regulation';
+
+export interface CanvasNodeData {
+    label: string;
+    type: CanvasNodeType;
+    entityData?: Risk | BusinessProcess | Asset | MitigationMeasure | Incident | Regulation;
+}
+
+export interface CanvasNode {
+    id: string;
+    type: CanvasNodeType;
+    position: { x: number; y: number };
+    data: CanvasNodeData;
+}
+
+export interface CanvasEdge {
+    id: string;
+    source: string;
+    target: string;
+    type?: string;
+    label?: string;
+}
+
+export interface CanvasState {
+    id?: string;
+    nodes: CanvasNode[];
+    edges: CanvasEdge[];
+    name?: string;
+    description?: string;
+    createdAt?: string;
+    updatedAt?: string;
+}
+
+export interface SimulationState {
+    isRunning: boolean;
+    speed: number;
+    currentStep: number;
+    affectedNodes: Set<string>;
+    riskPath: string[];
+    impactLevel: Map<string, number>;
+}
