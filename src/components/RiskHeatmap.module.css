@@ -160,20 +160,6 @@
     grid-template-rows: repeat(5, 1fr);
     height: 100%;
     padding-right: 0.75rem;
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #6b7280;
-}
-
-.container.fullScreen .yAxisTicks {
-    font-size: 1.5rem;
-    padding-right: 1.25rem;
-}
-
-.yAxisTicks span {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
     line-height: 1;
 }
 
