@@ -18,20 +18,18 @@ import {
     Bar,
     PieChart,
     Pie,
-    ScatterChart,
-    Scatter,
     Cell,
     XAxis,
     YAxis,
     CartesianGrid,
     Tooltip,
     Legend,
-    ResponsiveContainer,
-    ZAxis
+    ResponsiveContainer
 } from 'recharts';
 import { api } from '../services/api';
 import type { Risk, Incident, MitigationMeasure } from '../types';
 import styles from './Dashboard.module.css';
+import { RiskHeatmap } from '../components/RiskHeatmap';
 
 const COLORS = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
 
@@ -324,29 +322,8 @@ export const Dashboard: React.FC = () => {
                         <AlertTriangle size={20} style={{ marginRight: '8px' }} />
                         Matrica rizika (Vjerojatnost vs Utjecaj)
                     </h3>
-                    <div style={{ width: '100%', height: 300 }}>
-                        <ResponsiveContainer>
-                            <ScatterChart>
-                                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                                <XAxis
-                                    type="number"
-                                    dataKey="probability"
-                                    name="Vjerojatnost"
-                                    domain={[0, 6]}
-                                    stroke="#6b7280"
-                                />
-                                <YAxis
-                                    type="number"
-                                    dataKey="impact"
-                                    name="Utjecaj"
-                                    domain={[0, 6]}
-                                    stroke="#6b7280"
-                                />
-                                <ZAxis type="number" dataKey="z" range={[100, 1000]} />
-                                <Tooltip cursor={{ strokeDasharray: '3 3' }} />
-                                <Scatter name="Rizici" data={heatMapData} fill="#ef4444" />
-                            </ScatterChart>
-                        </ResponsiveContainer>
+                    <div style={{ width: '100%', height: 350, display: 'flex', justifyContent: 'center' }}>
+                        <RiskHeatmap data={heatMapData} />
                     </div>
                 </div>
 
