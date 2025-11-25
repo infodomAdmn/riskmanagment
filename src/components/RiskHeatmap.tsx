@@ -31,19 +31,19 @@ export const RiskHeatmap: React.FC<RiskHeatmapProps> = ({ data, fullScreen = fal
     };
 
     const impactLabels = [
-        { value: 5, label: 'Catastrophic' },
-        { value: 4, label: 'Significant' },
-        { value: 3, label: 'Moderate' },
-        { value: 2, label: 'Low' },
-        { value: 1, label: 'Negligible' },
+        { value: 5, label: 'Katastrofalan' },
+        { value: 4, label: 'Značajan' },
+        { value: 3, label: 'Umjeren' },
+        { value: 2, label: 'Nizak' },
+        { value: 1, label: 'Zanemariv' },
     ];
 
     const probabilityLabels = [
-        { value: 1, label: 'Improbable' },
-        { value: 2, label: 'Remote' },
-        { value: 3, label: 'Occasional' },
-        { value: 4, label: 'Probable' },
-        { value: 5, label: 'Frequent' },
+        { value: 1, label: 'Nevjerojatan' },
+        { value: 2, label: 'Malo vjerojatan' },
+        { value: 3, label: 'Povremen' },
+        { value: 4, label: 'Vjerojatan' },
+        { value: 5, label: 'Čest' },
     ];
 
     // Generate grid cells (5x5)
@@ -55,7 +55,6 @@ export const RiskHeatmap: React.FC<RiskHeatmapProps> = ({ data, fullScreen = fal
                 const cellData = getCellData(prob, impact);
                 const count = cellData?.count || 0;
                 const color = getCellColor(prob, impact);
-                const score = prob * impact;
 
                 grid.push(
                     <div
@@ -63,8 +62,7 @@ export const RiskHeatmap: React.FC<RiskHeatmapProps> = ({ data, fullScreen = fal
                         className={styles.cell}
                         style={{ backgroundColor: color }}
                     >
-                        <span className={styles.score}>{score}</span>
-                        {count > 0 && <span className={styles.countBadge}>{count}</span>}
+                        {count > 0 && <span className={styles.riskCount}>{count}</span>}
                         {count > 0 && (
                             <div className={styles.tooltip}>
                                 Vjerojatnost: {prob}<br />
@@ -84,7 +82,7 @@ export const RiskHeatmap: React.FC<RiskHeatmapProps> = ({ data, fullScreen = fal
             <div className={styles.mainLayout}>
                 {/* Y-axis Labels */}
                 <div className={styles.yAxisContainer}>
-                    <div className={styles.yAxisTitle}>Impact</div>
+                    <div className={styles.yAxisTitle}>Utjecaj</div>
                     <div className={styles.yAxisLabels}>
                         {impactLabels.map(l => (
                             <div key={l.value} className={styles.axisLabelItem}>
@@ -111,7 +109,7 @@ export const RiskHeatmap: React.FC<RiskHeatmapProps> = ({ data, fullScreen = fal
                                 </div>
                             ))}
                         </div>
-                        <div className={styles.xAxisTitle}>Likelihood</div>
+                        <div className={styles.xAxisTitle}>Vjerojatnost</div>
                     </div>
                 </div>
             </div>
@@ -125,19 +123,19 @@ export const RiskHeatmap: React.FC<RiskHeatmapProps> = ({ data, fullScreen = fal
                     </div>
                     <div className={styles.legendItem}>
                         <div className={styles.legendColor} style={{ backgroundColor: '#f97316' }}></div>
-                        <span>Urgent Action</span>
+                        <span>Hitna akcija</span>
                     </div>
                     <div className={styles.legendItem}>
                         <div className={styles.legendColor} style={{ backgroundColor: '#f59e0b' }}></div>
-                        <span>Action</span>
+                        <span>Akcija</span>
                     </div>
                     <div className={styles.legendItem}>
                         <div className={styles.legendColor} style={{ backgroundColor: '#84cc16' }}></div>
-                        <span>Monitor</span>
+                        <span>Praćenje</span>
                     </div>
                     <div className={styles.legendItem}>
                         <div className={styles.legendColor} style={{ backgroundColor: '#22c55e' }}></div>
-                        <span>No Action</span>
+                        <span>Bez akcije</span>
                     </div>
                 </div>
             </div>
