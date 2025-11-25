@@ -161,6 +161,27 @@
     height: 100%;
     padding-right: 0.75rem;
     line-height: 1;
+    gap: 6px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #6b7280;
+}
+
+.container.fullScreen .yAxisTicks {
+    font-size: 1.5rem;
+    padding-right: 1.25rem;
+    gap: 10px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.yAxisTicks span {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    line-height: 1;
 }
 
 /* X-axis ticks */
