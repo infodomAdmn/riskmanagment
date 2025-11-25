@@ -38,6 +38,7 @@ const navGroups: NavGroup[] = [
         label: 'Pregled',
         items: [
             { path: '/', label: 'Nadzorna ploča', icon: LayoutDashboard },
+            { path: '/matrix', label: 'Matrica rizika', icon: LayoutDashboard },
             { path: '/canvas', label: 'Mapa rizika', icon: Network },
             { path: '/canvas-builder', label: 'Canvas Builder', icon: Network },
         ]
