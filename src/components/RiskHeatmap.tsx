@@ -40,8 +40,8 @@ export const RiskHeatmap: React.FC<RiskHeatmapProps> = ({ data, fullScreen = fal
                 grid.push(
                     <div
                         key={`${prob}-${impact}`}
-                        className={`${styles.cell} ${count === 0 ? styles.emptyCell : ''}`}
-                        style={{ backgroundColor: count > 0 ? color : undefined }}
+                        className={styles.cell}
+                        style={{ backgroundColor: color }}
                     >
                         {count > 0 && count}
                         {count > 0 && (

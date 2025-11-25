@@ -29,7 +29,7 @@ import {
 import { api } from '../services/api';
 import type { Risk, Incident, MitigationMeasure } from '../types';
 import styles from './Dashboard.module.css';
-import { RiskHeatmap } from '../components/RiskHeatmap';
+
 
 const COLORS = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
 
@@ -47,7 +47,7 @@ export const Dashboard: React.FC = () => {
 
     const [riskTypeData, setRiskTypeData] = useState<{ name: string, value: number }[]>([]);
     const [riskLevelData, setRiskLevelData] = useState<{ name: string, level: number }[]>([]);
-    const [heatMapData, setHeatMapData] = useState<{ probability: number, impact: number, count: number, z: number }[]>([]);
+
     const [measureStatus, setMeasureStatus] = useState<{ name: string, value: number, color: string }[]>([]);
     const [recentActivity, setRecentActivity] = useState<{ type: string, title: string, date: string, severity: string }[]>([]);
     const [trendData, setTrendData] = useState<{ month: string, risks: number, incidents: number }[]>([]);
@@ -101,17 +101,7 @@ export const Dashboard: React.FC = () => {
                 });
             setRiskLevelData(topRisks);
 
-            // Heat map data (probability vs impact)
-            const heatMap = new Map<string, number>();
-            assessments.forEach(a => {
-                const key = `${a.probability}-${a.impact}`;
-                heatMap.set(key, (heatMap.get(key) || 0) + 1);
-            });
-            const heatMapArray = Array.from(heatMap.entries()).map(([key, count]) => {
-                const [probability, impact] = key.split('-').map(Number);
-                return { probability, impact, count, z: count * 100 };
-            });
-            setHeatMapData(heatMapArray);
+
 
             // Measure status distribution
             const statusCount = measures.reduce((acc, m) => {
@@ -317,15 +307,7 @@ export const Dashboard: React.FC = () => {
                     </div>
                 </div>
 
-                <div className={styles.chartCard}>
-                    <h3 className={styles.chartTitle}>
-                        <AlertTriangle size={20} style={{ marginRight: '8px' }} />
-                        Matrica rizika (Vjerojatnost vs Utjecaj)
-                    </h3>
-                    <div style={{ width: '100%', height: 350, display: 'flex', justifyContent: 'center' }}>
-                        <RiskHeatmap data={heatMapData} />
-                    </div>
-                </div>
+
 
                 <div className={styles.chartCard}>
                     <h3 className={styles.chartTitle}>
