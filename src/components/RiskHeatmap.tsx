@@ -105,7 +105,7 @@ export const RiskHeatmap: React.FC<RiskHeatmapProps> = ({ data, fullScreen = fal
                             {probabilityLabels.map(l => (
                                 <div key={l.value} className={styles.xAxisLabelItem}>
                                     <span className={styles.labelValue}>{l.value}</span>
-                                    <span className={styles.labelTextVertical}>{l.label}</span>
+                                    <span className={styles.labelTextHorizontal}>{l.label}</span>
                                 </div>
                             ))}
                         </div>
