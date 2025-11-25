@@ -61,33 +61,43 @@ export const RiskHeatmap: React.FC<RiskHeatmapProps> = ({ data, fullScreen = fal
     return (
         <div className={`${styles.container} ${fullScreen ? styles.fullScreen : ''}`}>
             <div className={styles.gridContainer}>
-                <div className={styles.yAxisLabel}>Utjecaj</div>
+                {/* Y-axis label */}
+                <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                    <div className={styles.yAxisLabel}>Utjecaj</div>
 
-                <div style={{ display: 'flex', flexDirection: 'row' }}>
-                    <div className={styles.yAxisTicks}>
-                        <span>5</span>
-                        <span>4</span>
-                        <span>3</span>
-                        <span>2</span>
-                        <span>1</span>
-                    </div>
+                    {/* Grid with Y-axis ticks */}
+                    <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+                        {/* Grid row with ticks */}
+                        <div style={{ display: 'flex', alignItems: 'stretch' }}>
+                            <div className={styles.yAxisTicks}>
+                                <span>5</span>
+                                <span>4</span>
+                                <span>3</span>
+                                <span>2</span>
+                                <span>1</span>
+                            </div>
 
-                    <div className={styles.grid}>
-                        {renderGrid()}
+                            <div className={styles.grid}>
+                                {renderGrid()}
+                            </div>
+                        </div>
+
+                        {/* X-axis ticks */}
+                        <div className={styles.xAxisTicks}>
+                            <span>1</span>
+                            <span>2</span>
+                            <span>3</span>
+                            <span>4</span>
+                            <span>5</span>
+                        </div>
                     </div>
                 </div>
 
+                {/* X-axis label */}
                 <div className={styles.xAxisLabel}>Vjerojatnost</div>
             </div>
 
-            <div className={styles.xAxisTicks} style={{ paddingLeft: fullScreen ? '3rem' : '2rem', maxWidth: fullScreen ? 'none' : '500px' }}>
-                <span>1</span>
-                <span>2</span>
-                <span>3</span>
-                <span>4</span>
-                <span>5</span>
-            </div>
-
+            {/* Legend */}
             <div className={styles.legend}>
                 <div className={styles.legendItem}>
                     <div className={styles.legendColor} style={{ backgroundColor: '#10b981' }}></div>

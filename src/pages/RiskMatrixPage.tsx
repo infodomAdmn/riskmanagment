@@ -32,9 +32,7 @@ export const RiskMatrixPage: React.FC = () => {
                 <p className={styles.subtitle}>Detaljan pregled distribucije rizika prema vjerojatnosti i utjecaju</p>
             </div>
             <div className={styles.content}>
-                <div style={{ width: '100%', height: '100%' }}>
-                    <RiskHeatmap data={heatMapData} fullScreen={true} />
-                </div>
+                <RiskHeatmap data={heatMapData} fullScreen={true} />
             </div>
         </div>
     );
