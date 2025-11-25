@@ -9,9 +9,10 @@ interface HeatmapDataPoint {
 
 interface RiskHeatmapProps {
     data: HeatmapDataPoint[];
+    fullScreen?: boolean;
 }
 
-export const RiskHeatmap: React.FC<RiskHeatmapProps> = ({ data }) => {
+export const RiskHeatmap: React.FC<RiskHeatmapProps> = ({ data, fullScreen = false }) => {
     // Helper to get color based on risk score (prob * impact)
     const getCellColor = (prob: number, imp: number) => {
         const score = prob * imp;
@@ -58,7 +59,7 @@ export const RiskHeatmap: React.FC<RiskHeatmapProps> = ({ data }) => {
     };
 
     return (
-        <div className={styles.container}>
+        <div className={`${styles.container} ${fullScreen ? styles.fullScreen : ''}`}>
             <div className={styles.gridContainer}>
                 <div className={styles.yAxisLabel}>Utjecaj</div>
 
@@ -79,7 +80,7 @@ export const RiskHeatmap: React.FC<RiskHeatmapProps> = ({ data }) => {
                 <div className={styles.xAxisLabel}>Vjerojatnost</div>
             </div>
 
-            <div className={styles.xAxisTicks} style={{ paddingLeft: '2rem', maxWidth: '500px' }}>
+            <div className={styles.xAxisTicks} style={{ paddingLeft: fullScreen ? '3rem' : '2rem', maxWidth: fullScreen ? 'none' : '500px' }}>
                 <span>1</span>
                 <span>2</span>
                 <span>3</span>

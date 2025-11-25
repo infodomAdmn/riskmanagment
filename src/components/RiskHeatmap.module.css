@@ -15,6 +15,13 @@
     gap: 1rem;
     width: 100%;
     max-width: 500px;
+    transition: all 0.3s ease;
+}
+
+.container.fullScreen .gridContainer {
+    max-width: none;
+    height: 100%;
+    gap: 2rem;
 }
 
 .yAxisLabel {
@@ -26,12 +33,20 @@
     font-size: 0.875rem;
 }
 
+.container.fullScreen .yAxisLabel {
+    font-size: 1.25rem;
+}
+
 .xAxisLabel {
     text-align: center;
     font-weight: 600;
     color: #6b7280;
     font-size: 0.875rem;
     grid-column: 2;
+}
+
+.container.fullScreen .xAxisLabel {
+    font-size: 1.25rem;
 }
 
 .grid {
@@ -46,6 +61,12 @@
     padding: 4px;
 }
 
+.container.fullScreen .grid {
+    gap: 8px;
+    padding: 8px;
+    border-radius: 12px;
+}
+
 .cell {
     display: flex;
     align-items: center;
@@ -58,6 +79,11 @@
     position: relative;
     font-size: 1.125rem;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.container.fullScreen .cell {
+    border-radius: 8px;
+    font-size: 2rem;
 }
 
 .cell:hover {
@@ -90,6 +116,12 @@
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
+.container.fullScreen .tooltip {
+    padding: 1rem;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
 .cell:hover .tooltip {
     opacity: 1;
 }
@@ -105,6 +137,11 @@
     color: #9ca3af;
 }
 
+.container.fullScreen .yAxisTicks {
+    font-size: 1.25rem;
+    padding-right: 1rem;
+}
+
 .xAxisTicks {
     display: flex;
     justify-content: space-around;
@@ -112,6 +149,11 @@
     padding-top: 0.5rem;
     font-size: 0.75rem;
     color: #9ca3af;
+}
+
+.container.fullScreen .xAxisTicks {
+    font-size: 1.25rem;
+    padding-top: 1rem;
 }
 
 /* Legend */
@@ -123,14 +165,30 @@
     color: #4b5563;
 }
 
+.container.fullScreen .legend {
+    gap: 2rem;
+    margin-top: 2rem;
+    font-size: 1rem;
+}
+
 .legendItem {
     display: flex;
     align-items: center;
     gap: 0.25rem;
 }
 
+.container.fullScreen .legendItem {
+    gap: 0.5rem;
+}
+
 .legendColor {
     width: 12px;
     height: 12px;
     border-radius: 2px;
+}
+
+.container.fullScreen .legendColor {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
 }
