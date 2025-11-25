@@ -154,12 +154,10 @@
     border-top-color: #1f2937;
 }
 
-/* Y-axis ticks */
+/* Y-axis ticks - using grid to match the 5x5 grid rows */
 .yAxisTicks {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    align-items: flex-end;
+    display: grid;
+    grid-template-rows: repeat(5, 1fr);
     height: 100%;
     padding-right: 0.75rem;
     font-size: 0.875rem;
@@ -173,8 +171,10 @@
 }
 
 .yAxisTicks span {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
     line-height: 1;
-    padding: 0.25rem;
 }
 
 /* X-axis ticks */
