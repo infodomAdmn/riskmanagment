@@ -1,114 +1,198 @@
 .container {
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row;
+    align-items: flex-start;
     justify-content: center;
     width: 100%;
     height: 100%;
     padding: 1.5rem;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    gap: 2rem;
 }
 
 .container.fullScreen {
     padding: 2rem;
 }
 
-/* Main grid container with axis labels */
-.gridContainer {
+/* Main Layout: Y-axis + (Grid + X-axis) */
+.mainLayout {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    align-items: flex-start;
+}
+
+/* Y-axis Container */
+.yAxisContainer {
+    display: flex;
+    flex-direction: row;
     align-items: center;
-    gap: 0.75rem;
-    max-width: 600px;
-    width: 100%;
-}
-
-.container.fullScreen .gridContainer {
-    max-width: 800px;
-    gap: 1rem;
-}
-
-/* Y-axis label (vertical) */
-.yAxisLabel {
-    writing-mode: vertical-rl;
-    transform: rotate(180deg);
-    text-align: center;
-    font-weight: 600;
-    color: #374151;
-    font-size: 1rem;
-    letter-spacing: 0.05em;
-    margin-right: 0.5rem;
-}
-
-.container.fullScreen .yAxisLabel {
-    font-size: 1.5rem;
     margin-right: 1rem;
 }
 
-/* X-axis label (horizontal) */
-.xAxisLabel {
+.yAxisTitle {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
     text-align: center;
-    font-weight: 600;
-    color: #374151;
-    font-size: 1rem;
-    letter-spacing: 0.05em;
-    margin-top: 0.5rem;
-}
-
-.container.fullScreen .xAxisLabel {
+    font-weight: 700;
     font-size: 1.5rem;
-    margin-top: 0.75rem;
+    color: #000;
+    margin-right: 1rem;
 }
 
-/* Grid with 5x5 cells */
+.yAxisLabels {
+    display: flex;
+    flex-direction: column;
+    height: 500px;
+    /* Match grid height */
+    justify-content: space-between;
+}
+
+.axisLabelItem {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    height: 100px;
+    /* Match cell height */
+    padding-right: 10px;
+}
+
+.labelText {
+    font-size: 1rem;
+    color: #374151;
+    margin-right: 10px;
+    text-align: right;
+}
+
+.labelValue {
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: #374151;
+    width: 20px;
+    text-align: center;
+}
+
+/* Grid and X-axis Container */
+.gridAndXAxis {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Grid */
 .grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    grid-template-rows: repeat(5, 1fr);
-    gap: 6px;
-    width: 100%;
-    aspect-ratio: 1;
-    background-color: #f9fafb;
-    border: 2px solid #e5e7eb;
-    border-radius: 12px;
-    padding: 8px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    grid-template-columns: repeat(5, 100px);
+    grid-template-rows: repeat(5, 100px);
+    gap: 2px;
+    /* White border */
+    background-color: white;
+    border: 2px solid white;
 }
 
-.container.fullScreen .grid {
-    gap: 10px;
-    padding: 12px;
-    border-radius: 16px;
-    border-width: 3px;
-}
-
-/* Individual cell */
+/* Cell */
 .cell {
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 6px;
-    font-weight: 700;
-    color: white;
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
     position: relative;
-    font-size: 1.25rem;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    min-height: 60px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.container.fullScreen .cell {
-    font-size: 2rem;
-    min-height: 100px;
-    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.1s ease;
 }
 
 .cell:hover {
     transform: scale(1.05);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     z-index: 10;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.score {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #000;
+}
+
+.countBadge {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: rgba(255, 255, 255, 0.8);
+    color: #000;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 10px;
+}
+
+/* X-axis Container */
+.xAxisContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 0.5rem;
+}
+
+.xAxisLabels {
+    display: flex;
+    width: 500px;
+    /* Match grid width */
+}
+
+.xAxisLabelItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100px;
+    /* Match cell width */
+    padding-top: 10px;
+}
+
+.labelTextVertical {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-size: 1rem;
+    color: #374151;
+    margin-top: 10px;
+}
+
+.xAxisTitle {
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: #000;
+    margin-top: 1rem;
+}
+
+/* Legend */
+.legend {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    /* Align to bottom if needed, or just standard flow */
+    margin-left: 2rem;
+    padding-top: 2rem;
+    /* Align somewhat with grid */
+}
+
+.legendColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.legendItem {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.legendColor {
+    width: 24px;
+    height: 24px;
+    border-radius: 2px;
+}
+
+.legendItem span {
+    font-weight: 600;
+    color: #374151;
+    font-size: 1rem;
 }
 
 /* Tooltip */
@@ -119,136 +203,17 @@
     transform: translateX(-50%);
     background-color: #1f2937;
     color: white;
-    padding: 0.75rem 1rem;
-    border-radius: 6px;
-    font-size: 0.875rem;
-    font-weight: 500;
+    padding: 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
     white-space: nowrap;
     pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.2s ease-in-out;
     z-index: 20;
     margin-bottom: 0.5rem;
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
-}
-
-.container.fullScreen .tooltip {
-    padding: 1rem 1.25rem;
-    font-size: 1.125rem;
-    margin-bottom: 0.75rem;
-    border-radius: 8px;
+    opacity: 0;
+    transition: opacity 0.2s;
 }
 
 .cell:hover .tooltip {
     opacity: 1;
-}
-
-/* Tooltip arrow */
-.tooltip::after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border: 6px solid transparent;
-    border-top-color: #1f2937;
-}
-
-/* Y-axis ticks - using grid to match the 5x5 grid rows */
-.yAxisTicks {
-    display: grid;
-    grid-template-rows: repeat(5, 1fr);
-    height: 100%;
-    padding-right: 0.75rem;
-    line-height: 1;
-    gap: 6px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #6b7280;
-}
-
-.container.fullScreen .yAxisTicks {
-    font-size: 1.5rem;
-    padding-right: 1.25rem;
-    gap: 10px;
-    padding-top: 15px;
-    padding-bottom: 15px;
-}
-
-.yAxisTicks span {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    line-height: 1;
-}
-
-/* X-axis ticks */
-.xAxisTicks {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    width: 100%;
-    padding-top: 0.75rem;
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #6b7280;
-}
-
-.container.fullScreen .xAxisTicks {
-    font-size: 1.5rem;
-    padding-top: 1.25rem;
-}
-
-.xAxisTicks span {
-    flex: 1;
-    text-align: center;
-}
-
-/* Legend */
-.legend {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 1.5rem;
-    margin-top: 2rem;
-    padding: 1rem;
-    background-color: #f9fafb;
-    border-radius: 8px;
-    border: 1px solid #e5e7eb;
-}
-
-.container.fullScreen .legend {
-    gap: 2.5rem;
-    margin-top: 2.5rem;
-    padding: 1.5rem;
-    border-radius: 12px;
-}
-
-.legendItem {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: #374151;
-}
-
-.container.fullScreen .legendItem {
-    gap: 0.75rem;
-    font-size: 1.125rem;
-}
-
-.legendColor {
-    width: 16px;
-    height: 16px;
-    border-radius: 3px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.container.fullScreen .legendColor {
-    width: 24px;
-    height: 24px;
-    border-radius: 4px;
 }
